@@ -13,10 +13,9 @@ la aleatoriedad retira el control total del artista acercandolo mas a la aleator
 - en mi perfil profesional que busco enfocarme en la animacion y creacion de mundos, por lo tanto esto puede facilitar el trabajo haciendo que se creen varios elementos en la escena de forma aleatoria, esto para que se vea mas natural y no tan rigido, de esta forma se puede facilitar el trabajo y generar un resultado mas estetico, ejemplos podrian ser:
 
 
-
 ### Actividad 3
 
-"js
+``` js
 
 let walker;
 
@@ -55,7 +54,7 @@ class Walker {
     }
   }
 }
-"
+```
 
 let walker es una variable global para poder accederla en todas las funciones que se llame 
 
