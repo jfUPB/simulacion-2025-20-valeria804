@@ -198,7 +198,8 @@ let y = random(height); elige una altura (y) completamente aleatoria entre 0 y l
 
 https://editor.p5js.org/valeria804/sketches/g3DspbuOU
 
-![Uploading Captura de pantalla 2025-07-23 074733.png…]() 
+<img width="597" height="363" alt="Captura de pantalla 2025-07-23 074733" src="https://github.com/user-attachments/assets/05bee5ce-6e28-4d77-a250-590961f6cf15" />
+
 
 ### Actividad seis
 
