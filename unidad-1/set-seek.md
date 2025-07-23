@@ -198,7 +198,7 @@ let y = random(height); elige una altura (y) completamente aleatoria entre 0 y l
 
 https://editor.p5js.org/valeria804/sketches/g3DspbuOU
 
-![Uploading Captura de pantalla 2025-07-23 074733.png…]()
+![Uploading Captura de pantalla 2025-07-23 074733.png…]() 
 
 ### Actividad seis
 
@@ -258,4 +258,4 @@ class Walker {
 ```
 https://editor.p5js.org/valeria804/sketches/08ryIRmGO
 
-<img width="591" height="237" alt="Captura de pantalla 2025-07-23 084514" src="https://github.com/user-attachments/assets/3f6b9d1f-5b77-42d4-a25e-137228a81761" /> 
+<img width="591" height="237" alt="Captura de pantalla 2025-07-23 084514" src="https://github.com/user-attachments/assets/3f6b9d1f-5b77-42d4-a25e-137228a81761" />  
