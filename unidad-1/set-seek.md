@@ -12,11 +12,13 @@ la aleatoriedad retira el control total del artista acercandolo mas a la aleator
 
 - en mi perfil profesional que busco enfocarme en la animacion y creacion de mundos, por lo tanto esto puede facilitar el trabajo haciendo que se creen varios elementos en la escena de forma aleatoria, esto para que se vea mas natural y no tan rigido, de esta forma se puede facilitar el trabajo y generar un resultado mas estetico, ejemplos podrian ser:
 
-una animacion en la se crean particulas que simulan fuego, humo o polvo, y para cada particula se asigna un valor aleatorio: valores como velocidad, direccion y duracion 
-
 ### Actividad 3
 
+Una animacion en la se crean particulas que simulan fuego, humo o polvo, y para cada particula se asigna un valor aleatorio: valores como velocidad, direccion y duracion 
+
+
 ```js
+
 
 let walker;
 
@@ -63,7 +65,7 @@ walker.step() es un metodo que indica en que espacio del lienzo se hace el paso 
 
 el metodo strock() en la funcion draw() 
 
-#### modificacion 
+#### Modificacion 
 
 quiero hacer que la particula tenga un movimiento diagonal tambien, en el original solo esta moviendose en el eje "x" y "y". para esto primero deberia modificar este 4 ¨const choice = floor(random(4));¨ ya que asi se puede ejegir mas opciones de movimiento,
 
@@ -260,3 +262,4 @@ class Walker {
 https://editor.p5js.org/valeria804/sketches/08ryIRmGO
 
 <img width="591" height="237" alt="Captura de pantalla 2025-07-23 084514" src="https://github.com/user-attachments/assets/3f6b9d1f-5b77-42d4-a25e-137228a81761" />  
+
