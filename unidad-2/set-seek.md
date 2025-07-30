@@ -37,4 +37,7 @@ function draw() {
 ```
 
 - para sumar un vector se suman las variables en x y y respectivamente de cada uno, y esa suma forma un nuevo vector.
-  en p5.js se usa -----> position.add(velocity);
+  en p5.js se usa -----> position.add(velocity); De por si, al usar vectores, no los podemos sumar como sumaríamos dos números, entonces nos toca usar unso métodos diferentes, en este lo que se hace es que se suma los valores de la velocidad y de posicion y cuando se hace, se reemplaza el valor de posicion por el nuevo que se creo; se modifica position
+
+
+- 
