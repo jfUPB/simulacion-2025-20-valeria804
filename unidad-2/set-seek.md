@@ -183,7 +183,7 @@ function mover(vector) {
 
 - Te encuentras con un periodista en la calle y te pregunta ¿Para qué sirve el método dot()? ¿Qué le responderías en un frase?
 
-  dot() sirve para saber si dos vectores van en la misma dirección o en direcciones opuestas.. Si el resultado es alto, apuntan en la misma dirección.
+  dot() sirve para saber si dos vectores van en la misma dirección o en direcciones opuestas.. Si el resultado es alto, apuntan en la       misma dirección.
 
 -  El método dot() tiene una versión estática y una de instancia. ¿Cuál es la diferencia entre ambas?
 
@@ -282,3 +282,4 @@ para el vector verde, establecio origen como la punta del vector v1, calculada c
   drawArrow() dibuja una flecha a partir de un vector base y una dirección, compuesto por (inicio, final, color). para crear la flecha Traslada el origen del sistema de coordenadas a la base del vector, despues dibuja la linea de la flecha desde (0,0) a (vec.x, vec.y) y rota el sistema, despues dibuja la punta de la flecha como un triangulo y la punta la pone al final del vector
 
   
+
