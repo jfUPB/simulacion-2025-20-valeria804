@@ -126,6 +126,159 @@ function draw() {
 }
 ```
 
-aqui hay una explicacion de las lineas de codigo, a demas de una nueva variable para demostrar cuando el valor del vector no podria ser modificado
+- Recuerda los conceptos de paso por valor y paso por referencia en programación. Muestra ejemplos de este concepto en javascript.
 
-- 
+  paso por valor cuando se pasa un valor primitivo (como un número, booleano o string) a una función, y se copia temporalmente el valor y la funcion trabaja con ella.
+
+  ```js
+  function setup() {
+  noCanvas();
+  
+  let a = 5;
+  cambiar(a);
+  
+  print("Valor final de a: " + a); // Imprime: 5
+  }
+
+  function cambiar(x) {
+  x = x + 1;
+  print("Dentro de la función: " + x); // Imprime: 6
+  }
+
+  ```
+
+  paso por referencia es cuando pasas un objeto, como un array o un p5.Vector, estás pasando una referencia a la ubicación en memoria de ese objeto, la funcion puede modificar directamente el contenido de ese objeto, se modifican valores en x y y
+
+```js
+function setup() {
+  noCanvas();
+  
+  let v = createVector(10, 20); // un vector (objeto)
+
+  mover(v); // le pasamos la referencia del vector
+  
+  print("Después de mover: " + v.x); // Imprime: 15
+}
+
+function mover(vector) {
+  vector.x += 5;
+  print("Dentro de la función: " + vector.x); // Imprime: 15
+}
+
+```
+
+- en el codigo se usa el paso por referencia ya que a v se le manda la direccion del vector y de este modo puede manipularlo
+
+### Actividad 4
+
+- ¿Para qué sirve el método mag()? Nota que hay otro método llamado magSq(). ¿Cuál es la diferencia entre ambos? ¿Cuál es más eficiente?
+
+  El método mag() calcula la magnitud del vector, es decir, su longitud desde el origen (0, 0) hasta su posicion en el espacio. medir la distancia del vector al origen usando el Teorema de Pitágoras.
+
+  mag() calcula la magnitud real del vector (con raiz cuadrada). magSq() devuelve la magnitud al cuadrado, esta es mas eficiente, ya que al no usar raiz cuadrada consume menos recursos, aunque no es usada para saber valores exactos 
+  
+- ¿Para qué sirve el método normalize()?
+
+   normalize() transforma el vector para que tenga una longitud de 1, es decir, lo convierte en un vector unitario que mantiene su dirección, pero pierde su escala. se usa cuando se necesita solo la direccion 
+
+- Te encuentras con un periodista en la calle y te pregunta ¿Para qué sirve el método dot()? ¿Qué le responderías en un frase?
+
+  dot() sirve para saber si dos vectores van en la misma dirección o en direcciones opuestas.. Si el resultado es alto, apuntan en la misma dirección.
+
+-  El método dot() tiene una versión estática y una de instancia. ¿Cuál es la diferencia entre ambas?
+
+  la version estatica se llama desde la clase p5.Vector y le pasas los dos vectores como parámetros 	p5.Vector.dot(v1, v2). en la version de instancia tienes un vector y llamas el método desde ese vector, 	v1.dot(v2).
+
+-  Ahora el mismo periodista curioso de antes te pregunta si le puedes dar una intuición geométrica acerca del producto cruz. Entonces te pregunta ¿Cuál es la interpretación geométrica del producto cruz de dos vectores? Tu respuesta debe incluir qué pasa con la orientación y la magnitud del vector resultante.
+
+   El producto cruz entre dos vectores en 3D genera un nuevo vector perpendicular a ambos. su orientacion Sigue la regla de la mano derecha. Si los dedos apuntan del primer al segundo vector, el pulgar indica la dirección del resultado. y su magnitud representa el área entre los dos vectores, siendo igual al área del paralelogramo que forman los dos vectores originales.
+
+-  ¿Para que te puede servir el método dist()?
+
+   dist() mide la distancia entre dos vectores en el espacio (como puntos). Las coordenadas de un punto se pueden representar mediante los componentes de un vector que se extiende desde el origen hasta el punto.
+
+-  ¿Para qué sirven los métodos normalize() y limit()?
+
+  normalize() -> Convierte el vector en uno unitario (longitud 1). limit(max) -> Restringe la longitud máxima del vector a un valor específico, evita que algo se mueva demasiado rapido
+
+### Actividad 5
+
+```js
+let l = 0;
+let arriba;
+
+function setup() {
+    createCanvas(400, 400);
+    l = 0.5;
+    arriba = 1;
+}
+
+function draw() {
+    background(200);
+    
+    let v0 = createVector(50, 50);
+    let v1 = createVector(200, 0);
+    let v2 = createVector(0, 200);
+    let v3 = p5.Vector.lerp(v1, v2, l);
+    let origen = p5.Vector.add(v1, v0);
+    let destino = p5.Vector.add(v0, v2);
+    let dir = p5.Vector.sub(destino, origen);
+    
+    // Interpolación de color
+    let c1 = color(255, 0, 0);    // rojo
+    let c2 = color(0, 0, 255);    // azul
+    let interpolado = lerpColor(c1, c2, l);  // color interpolado
+
+    drawArrow(v0, v1, 'red');
+    drawArrow(v0, v2, 'blue');
+    drawArrow(v0, v3, interpolado);  // color cambia dinámicamente
+    drawArrow(origen, dir, 'green');
+  
+    if(l <= 0) arriba = true;
+  
+    if(l >= 1) arriba = false;
+    
+    if(arriba){
+        l += 0.01;
+    } else {
+        l -= 0.01;
+    }
+}
+
+function drawArrow(base, vec, myColor) {
+    push();
+    stroke(myColor);
+    strokeWeight(3);
+    fill(myColor);
+    translate(base.x, base.y);
+    line(0, 0, vec.x, vec.y);
+    rotate(vec.heading());
+    let arrowSize = 7;
+    translate(vec.mag() - arrowSize, 0);
+    triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);
+    pop();
+}
+```
+se usa .lerp() para interpolar entre los vectores v1 y v2 según el valor l, que va de 0 a 1.
+
+usando esto 
+
+```js
+if (l <= 0) arriba = true;
+if (l >= 1) arriba = false;
+```
+hace que l sube de 0 a 1 y luego baja de 1 a 0 continuamente. y la velocidad constante se determina con pasos en 0.01
+
+para la interpolacion de color use lerpColor() para crear un valor intermedio entre rojo y azul, con la variable interpolado se guarda esa funcion y se le asigna a drawArrow, y de este modo se convierta en su nuevo color
+
+para el vector verde, establecio origen como la punta del vector v1, calculada como v0 + v1. destino como la punta del vector v2, calculada como v0 + v2. usanod las propiedades de los vectores dir = destino - origen da un nuevo vector desde la punta de v1 hasta la punta de v2. con drawArrow(origen, dir, 'green') se dibuja ese vector como una flecha desde la punta roja hasta la azul.
+
+- ¿Cómo funciona lerp() y lerpColor().
+
+  El método .lerp() (de Linear Interpolation) crea un vector intermedio entre dos vectores, basandose en un parametro amt (entre 0 y 1), que indica cuanto peso se da a cada vector. lerpColor() se usa para interpolar entre dos colores, de forma parecida a lerp(), permite crear un color intermedio entre dos colores dados, usando un valor amt entre 0 y 1 dependiendo en que momento del tiempo esta.
+
+- ¿Cómo se dibuja una flecha usando drawArrow()?
+  
+  drawArrow() dibuja una flecha a partir de un vector base y una dirección, compuesto por (inicio, final, color). para crear la flecha Traslada el origen del sistema de coordenadas a la base del vector, despues dibuja la linea de la flecha desde (0,0) a (vec.x, vec.y) y rota el sistema, despues dibuja la punta de la flecha como un triangulo y la punta la pone al final del vector
+
+  
