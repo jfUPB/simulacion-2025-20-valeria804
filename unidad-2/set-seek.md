@@ -281,5 +281,23 @@ para el vector verde, establecio origen como la punta del vector v1, calculada c
   
   drawArrow() dibuja una flecha a partir de un vector base y una dirección, compuesto por (inicio, final, color). para crear la flecha Traslada el origen del sistema de coordenadas a la base del vector, despues dibuja la linea de la flecha desde (0,0) a (vec.x, vec.y) y rota el sistema, despues dibuja la punta de la flecha como un triangulo y la punta la pone al final del vector
 
+### Actividad 6
+
+- Representa una forma sencilla pero fundamental de simular el movimiento de objetos usando vectores en una pantalla, se tiene en cuenta que cada objeto riene una posicion, una velocidad y una acelaracion (y todas estan representadas por vectores)
+
+  (position) representa dónde está el objeto en el espacio. (velocity) representa cómo se mueve: en qué dirección y con qué rapidez. y el movimiento es la suma de esos dos vectores; en cada instante de tiempo el objeto se mueve al sumar su velocidad a su posición. en el marco basico no hay aceleracion ya que hay velocidad constante.
+
+  Geometricamente, puede entenderse como una construcción vectorial en el plano 2D. La posición es un punto en el espacio (x,y). La velocidad es un vector que apunta en una dirección y tiene una magnitud. Al sumar el vector de velocidad a la posición, se obtiene una nueva posición.
+
+- se crean metodos para actualizar, mostrar y verificar los bordes, usando this.position: vector de posición. this.velocity: vector de velocidad.
+
+  "this.position = createVector(random(width), random(height));" inicializa el estado de posicion del objeto
+  "this.velocity = createVector(random(-2, 2), random(-2, 2));" define la direccion y magnitud del movimiento
+  "this.position.add(this.velocity);" actualiza la posicion sumando el vector velocidad, siendo la base principal de motion 101
+  la aceleracion es constante
+
+### Actividad 7
+
   
+
 
