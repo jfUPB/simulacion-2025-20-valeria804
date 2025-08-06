@@ -305,3 +305,4 @@ velocidad+=aceleracion,  posicion+=velocidad
 
 - aceleracion hacia el mouse: en cada frame, el objeto calcula un vector de aceleracion que apunta desde su posición actual hacia el cursor del mouse. el vector se normaliza (para solo tener direccion), luego se escala a una magnitud específica, y se aplica como aceleración. El vector se convierte en una aceleración constante hacia el mouse. y se siguen los pasos normales del modelo
 
+
