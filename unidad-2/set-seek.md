@@ -294,10 +294,14 @@ para el vector verde, establecio origen como la punta del vector v1, calculada c
   "this.position = createVector(random(width), random(height));" inicializa el estado de posicion del objeto
   "this.velocity = createVector(random(-2, 2), random(-2, 2));" define la direccion y magnitud del movimiento
   "this.position.add(this.velocity);" actualiza la posicion sumando el vector velocidad, siendo la base principal de motion 101
-  la aceleracion es constante
 
 ### Actividad 7
 
-  
+velocidad+=aceleracion,  posicion+=velocidad
 
+- aceleracion constante: Siempre se le añade el mismo pequeño cambio a la velocidad en cada frame, lo cual hace que la velocidad aumente gradualmente, dicha velocidad se suma a la posicion y geenra el movimiento final. al inicio no hay velocidad inicial, "this.velocity.add(this.acceleration);" con eso se aplica la aceleración al vector velocidad. Suma la velocidad actual a la posición, haciendo que el objeto se mueva.
+
+- aceleracion aleatoria: el objeto recibe una nueva aceleración aleatoria en cada frame, lo que provoca que su movimiento sea erratico e impredecible. "p5.Vector.random2D()" genera un vector unitario en una dirección aleatoria. "mult(random(2))" escala esa dirección con una magnitud aleatoria entre 0 y 2. esto hace que cada frame cambia completamente la dirección y fuerza de la aceleracion. despues se aplica los pasos basicos de este modelo: La aceleración modifica la velocidad. Se limita la velocidad para evitar que se dispare. La posición se actualiza con base en la velocidad. en este caso la aceleracion no es calculada sino randomizada.
+
+- aceleracion hacia el mouse: en cada frame, el objeto calcula un vector de aceleracion que apunta desde su posición actual hacia el cursor del mouse. el vector se normaliza (para solo tener direccion), luego se escala a una magnitud específica, y se aplica como aceleración. El vector se convierte en una aceleración constante hacia el mouse. y se siguen los pasos normales del modelo
 
