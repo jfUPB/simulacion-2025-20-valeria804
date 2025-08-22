@@ -69,7 +69,7 @@ function setup() {
 
   // Crear distribución custom: más cuerpos pequeños que grandes
   for (let i = 0; i < 30; i++) {
-    let mass = customDistribution(); 
+    let mass = LevyFlight(); 
     bodies.push(new Body(random(width), random(height), mass));
   }
 }
@@ -97,7 +97,7 @@ function draw() {
 }
 
 // Genera una distribución sesgada: mayoría pequeñas masas, pocas grandes
-function customDistribution() {
+function LevyFlight() {
   let r = random();
   return pow(r, 4) * 50 + 2; // ajusta exponente para más sesgo
 }
@@ -112,3 +112,4 @@ function mousePressed() {
 https://editor.p5js.org/valeria804/sketches/sXV_65vny 
 
 <img width="461" height="463" alt="Captura de pantalla 2025-08-22 070726" src="https://github.com/user-attachments/assets/0b7ee58e-be35-4112-9a64-3593cfac7e94" />
+
