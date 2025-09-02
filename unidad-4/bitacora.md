@@ -140,8 +140,233 @@ en cada update() la aceleración se reinicia con this.acceleration.mult(0), ento
 ### Actividad 4
 
 - Identifica motion 101. ¿Qué modificación hay que hacer al motion 101 cuando se quiere agregar fuerzas acumulativas? Trata de recordar     por qué es necesario hacer esta modificación.
+
+ en applyForce la fuerza produce aceleracion siendo a=F/m, lo cual hace que cambien la velocidad y esta velocidad cambie la posicion, cuando hay varias fuerzas se acumulan todas en la aceleracion, haciendo que en cada frame todas las fuerzas se sumen en applyForce y despues de usarlas en update se resetea la aceleracion en cero, de lo contrario las fuerzas se acumularan indefinidamente.
+
+ esto mismo se aplica al movimiento angular, donde hay un torque que representa la fuerza, angularAcceleration) que es la aceleración lineal, velocidad angular (angularVelocity) que es la velocidad lineal. Ángulo (angle) que equivale a posicion 
+
 - Identifica dónde está el Attractor en la simulación. Cambia el color de este.
+
+ el attractor se inicializa attractor = new Attractor(); en el centro y se dibuja en draw con attractor.display(); para cambiarle el color hay que editarlo dentro de attractor.js:
+
+ ```js
+display() {
+    ellipseMode(CENTER);
+    stroke(0);
+    if (this.dragging) {
+      fill(50);
+    } else if (this.rollover) {
+      fill(100);
+    } else {
+      fill(175, 200);
+    }
+    fill(0, 150, 255, 200);
+    ellipse(this.position.x, this.position.y, this.mass * 2);
+  }
+ ```
+
 - Observa que el Attractor tiene dos atributos this.dragging y this.rollover. Estos atributos no se modifican en el código, pero            permitirían mover el attractor con el mouse y cambiar su color cuando el mouse está sobre él. ¿Cómo podrías modificar el código para      que esto funcione? considera las funciones que ofrece p5.js para interactuar con el mouse.
+
+ el rollover identifica si el mouse esta encima de del attractor y dragging identifica si se hace click sobre el attractor, el codigo modificado es este 
+
+ en attractor.js
+
+ ```js
+class Attractor {
+  constructor() {
+    this.position = createVector(width / 2, height / 2);
+    this.mass = 20;
+    this.G = 1;
+    this.dragOffset = createVector(0, 0);
+    this.dragging = false;
+    this.rollover = false; 
+  }
+
+  attract(mover) {
+    // Calculate direction of force
+    let force = p5.Vector.sub(this.position, mover.position);
+    // Distance between objects
+    let distance = force.mag();
+    // Limiting the distance to eliminate "extreme" results for very close or very far objects
+    distance = constrain(distance, 5, 25);
+
+    // Calculate gravitional force magnitude
+    let strength = (this.G * this.mass * mover.mass) / (distance * distance);
+    // Get force vector --> magnitude * direction
+    force.setMag(strength);
+    return force;
+  }
+
+  // Method to display
+  display() {
+    ellipseMode(CENTER);
+    stroke(0);
+    if (this.dragging) {
+      fill(50);
+    } else if (this.rollover) {
+      fill(100);
+    } else {
+      fill(175, 200);
+    }
+    ellipse(this.position.x, this.position.y, this.mass * 2);
+  }
+  
+  // The methods below are for mouse interaction
+  handlePress(mx, my) {
+    let d = dist(mx, my, this.position.x, this.position.y);
+    if (d < this.mass) {
+      this.dragging = true;
+      this.dragOffset.x = this.position.x - mx;
+      this.dragOffset.y = this.position.y - my;
+    }
+  }
+
+  handleHover(mx, my) {
+    let d = dist(mx, my, this.position.x, this.position.y);
+    if (d < this.mass) {
+      this.rollover = true;
+    } else {
+      this.rollover = false;
+    }
+  }
+
+  stopDragging() {
+    this.dragging = false;
+  }
+
+  handleDrag(mx, my) {
+    if (this.dragging) {
+      this.position.x = mx + this.dragOffset.x;
+      this.position.y = my + this.dragOffset.y;
+    }
+  }
+}
+ ```
+
+y el sketch,js:
+
+```js
+// The Nature of Code
+// Daniel Shiffman
+// http://natureofcode.com
+
+let movers = [];
+let attractor;
+
+function setup() {
+  createCanvas(640, 240);
+
+  for (let i = 0; i < 20; i++) {
+    movers.push(new Mover(random(width), random(height), random(0.1, 2)));
+  }
+  attractor = new Attractor();
+}
+
+function draw() {
+  background(255);
+
+  attractor.display();
+
+  for (let i = 0; i < movers.length; i++) {
+    let force = attractor.attract(movers[i]);
+    movers[i].applyForce(force);
+
+    movers[i].update();
+    movers[i].show();
+  }
+}
+
+function mouseMoved() {
+  attractor.handleHover(mouseX, mouseY);
+}
+
+function mousePressed() {
+  attractor.handlePress(mouseX, mouseY);
+}
+
+function mouseDragged() {
+  attractor.handleHover(mouseX, mouseY);
+  attractor.handleDrag(mouseX, mouseY);
+}
+
+function mouseReleased() {
+  attractor.stopDragging();
+}
+
+```
+
+handlePress(mx, my) detecta si se hizo click dentro del circulo y guarda el offset entre el mouse y el centro para que al arrastrar no salte.
+
+en handleHover(mx, my) se activa el rollover si el mouse esta dentro del radio, stopDragging() suelta el objeto cuando dejas de presionar el mouse.
+
+y en handleDrag(mx, my) se actualiza la posicion del attractor mientras se arrastra con el mouse. posición = mouse + offset capturado.
+
+### Actividad 5
+
+- Observa de nuevo esta parte del código ¿Cuál es la relación entre r y theta con las posiciones x y y? Puedes repasar entonces la definición de coordenadas polares y cómo se convierten a coordenadas cartesianas.
+
+  su relacion es la transformacion entre coordenadas polares y coordenadas cartesianas, en polares un punto se represneta por P(r,θ), y en cartesianas P(x,y). la conversion de polares a cartesianas es x = r * cos(theta) y y = r * sin(theta), el coseno controla la proyección en el eje X, el seno controla la proyección en el eje Y. lo que haces es mover el punto en un círculo alrededor del centro. al incrementar theta, el punto parece girar, aunque en realidad solo cambias el ángulo con una distancia r y recalculas sus coordenadas cartesianas.
+
+- primera modificacion
+
+ p5.Vector.fromAngle(theta) es un vector unitario de longitud 1 apuntando en la dirección del ángulo theta. circle(v.x, v.y, 48); hace que se dibuje un circulo en la posicion (x,y)=(cos(θ),sin(θ)). El centro del círculo siempre queda a 1 unidad del origen, ya que no se multiplica por r, haciendo que no se vea el movimiento 
+
+- segunda modificacion
+
+  fromAngle() recibe dos parámetros: el ángulo y la magnitud, haciendo que el vector apunte a direccion teta con una longitud r, esto hace que el círculo gira con un radio grande r, como en el código original.
+
+  siendo la versión "vectorizada" de la conversión polar a cartesiana.
+
+### Actividad 6
+
+- Recuerda estos conceptos: velocidad angular, frecuencia, periodo, amplitud y fase.
+
+ Amplitud (A): Es el valor máximo (positivo o negativo) que alcanza la onda.
+
+ Velocidad angular (ω): Es la rapidez con la que la onda oscila en radianes por segundo.
+
+ Frecuencia (f): Número de oscilaciones por segundo
+
+ Periodo (T): El tiempo que tarda la función en completar un ciclo completo.
+
+ Fase (φ): El “desplazamiento inicial” de la onda en el tiempo.
+  
+- Realiza una simulación en la que puedas modificar estos parámetros y observar cómo se comporta la función sinusoide.
+
+  tomando el ejemplo del profe quise modificar el parametro de velocidad angular
+
+ ```js
+  let amplitude = 200;
+let angle = 0;
+let angleVelocity = 0.05;
+
+function setup() {
+  createCanvas(640, 240);
+}
+
+function draw() {
+  background(255);
+  
+  let x = amplitude * sin(angle);
+  angle += angleVelocity;
+
+  stroke(0);
+  strokeWeight(2);
+  translate(width / 2, height / 2);
+
+  fill(127);
+  line(0, 0, x, 0);
+  circle(x, 0, 48);
+   
+}
+
+function keyPressed(){
+  angleVelocity += TWO_PI/360;  
+}
+```
+
+### Actividad 7
+
 
 ## Explicación conceptual de la obra
 
@@ -176,6 +401,7 @@ en cada update() la aceleración se reinicia con this.acceleration.mult(0), ento
 ```
 
 ## Captura de pantalla representativa
+
 
 
 
