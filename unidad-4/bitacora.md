@@ -1,5 +1,148 @@
 # Evidencias de la unidad 4
 
+## set-seek 
+
+### Actividad 2
+
+- ¿Qué está pasando en esta simulación? ¿Cuál es la interacción?
+ 
+  el codigo dibuja una barra y un circulo en cada extremo, la barra rota alrededor de su centro cada vez que se presiona una tecla
+  
+- Nota que en cada frame se está trasladando el origen del sistema de coordenadas al centro de la pantalla. ¿Por qué crees que se hace esto?
+
+  se coloca en el centro de la pantalla para que la rotacion ocurra al rededor del centro de la figura y no de la esquina 
+  
+- Cuál es la relación entre el sistema de coordenadas y la función rotate().
+
+  rotate gira todo el sistema de coordenadas alrededor del origen actual, despues de llamar translate, el origen esta en el centro. line y circle se dibujan dentro del sistema rotado y no en el sistema original
+
+- Observa que al dibujar los elementos gráficos parece que se está dibujando en la posición (0, 0) del sistema de coordenadas. ¿Por qué crees que se hace esto? y ¿Por qué aunque en cada frame se hace lo mismo, los elementos gráficos rotan?
+
+  despues de translate y rotate ya no estamos en el sistema original de la ventana. cuando se dibuja la linea se dibuja centrada en el origen actual que esta en el centro de la pantalla y los circulos tambien son relativos a ese nuevo sistema de coordenadas rotado. line y circle es el mismo pero se ejecutan en un sistemas de coordenadas rotado. al aumentar angle el sistema gira antes de volver a dibujar
+
+- Identifica el marco motion 101. ¿Qué es lo que se está haciendo en este marco?
+
+  el objeto mover tiene position, velocity y acceleration, en este se suma la velocidad con la posicion para tener velocidad, y se suma velocidad con aceleracion para tener velocidad. acelerar es un vector que apunta hacia el mouse, la velocidad se actualiza sumando la aceleracion, o seas que cambia su velocidad con la direccion y cambia su posicion 
+  
+- ¿Qué hace la función heading()?
+
+  heading() devuelve el ángulo de un vector en radianes, medido desde el eje X positivo. obtiene el ángulo de la velocidad, es decir, hacia dónde se está moviendo el objeto.
+
+- ¿Qué hace la función push() y pop()? Realiza algunos experimentos para entender su funcionamiento.
+
+  push() guarda el estado actual del sistema de coordenadas. pop() restaura ese estado guardado. como cada transformacion afecta el sistema de coordenadas global. cualquier translate() y rotate() que ocurra entre push() y pop() afecta solo a ese objeto, sin modificar el resto del dibujo ----->  si quitaras push() y pop(), las rotaciones se acumularían en todos los objetos que dibujes después.
+
+- ¿Qué hace rectMode(CENTER)? Realiza algunos experimentos para entender su funcionamiento.
+
+  por defecto se dibuja el rectángulo desde la esquina superior izquierda (CORNER mode). Con rectMode(CENTER), el rectángulo se dibuja centrado en el punto (x, y). lo que hace que al rotar el rectangulo lo hace al rededor de su centro y no de una esquina 
+
+- ¿Cuál es la relación entre el ángulo de rotación y el vector de velocidad? Trata de dibujar en un papel el vector de velocidad y cómo se relaciona con el ángulo de rotación y la operación de traslación y rotación.
+
+  el vector de velociada apunta en direccion en la que se mueve el objeto, se usa el angulo de ese vector para rotar el rectangulo en direccion a la velocidad. El translate(this.position.x, this.position.y) primero mueve el origen al punto donde está el objeto. Luego rotate(angle) alinea el sistema de coordenadas con la dirección de la velocidad.
+
+### Actividad 3
+
+mover.js
+
+```js
+class Vehicle {
+  constructor() {
+    this.position = createVector(width / 2, height / 2);
+    this.velocity = createVector(0, 0);
+    this.acceleration = createVector(0, 0);
+    
+    this.topspeed = 5;
+
+    this.Heading = 0; // guardamos el último ángulo válido
+  
+    this.r = 16;
+  }
+
+  applyForce(force) {
+    let f = force.copy();
+    //f.div(mass); // ignoring mass right now
+    this.acceleration.add(f);
+  }
+
+  update() {
+    this.velocity.add(this.acceleration);
+    this.velocity.limit(this.topspeed);
+    this.position.add(this.velocity);
+
+    // reseteamos aceleración
+    this.acceleration.mult(0);
+
+    // si la velocidad no es cero, actualizamos el ángulo guardado
+    if (this.velocity.mag() > 0) {
+      this.Heading = this.velocity.heading();
+    }
+  }
+
+  stop() {
+    this.velocity.mult(0);
+  }
+
+  edges() {
+    if (this.position.x > width) this.position.x = 0;
+    else if (this.position.x < 0) this.position.x = width;
+
+    if (this.position.y > height) this.position.y = 0;
+    else if (this.position.y < 0) this.position.y = height;
+  }
+
+  show() {
+    let angle = this.Heading; // usamos el último ángulo válido
+
+    push();
+    translate(this.position.x, this.position.y);
+    rotate(angle + PI / 2);
+    stroke(0);
+    strokeWeight(2);
+    fill(175);
+    beginShape();
+    vertex(0, -this.r * 1.5);
+    vertex(-this.r, this.r);
+    vertex(this.r, this.r);
+    endShape(CLOSE);
+    pop();
+  }
+}
+```
+
+sketch.js
+
+```js
+let vehicle;
+
+function setup() {
+  createCanvas(640, 240);
+  vehicle = new Vehicle();
+}
+
+function draw() {
+  background(255);
+
+  if (keyIsDown(LEFT_ARROW)) {
+    vehicle.applyForce(createVector(-0.5, 0));
+  } else if (keyIsDown(RIGHT_ARROW)) {
+    vehicle.applyForce(createVector(0.5, 0));
+  } else {
+    vehicle.stop(); // ahora se queda quieto pero mantiene dirección
+  }
+
+  vehicle.update();
+  vehicle.edges();
+  vehicle.show();
+}
+```
+en cada update() la aceleración se reinicia con this.acceleration.mult(0), entonces si no hay tecla pulsada no queda fuerza acumulada → el movimiento se detiene.
+
+### Actividad 4
+
+- Identifica motion 101. ¿Qué modificación hay que hacer al motion 101 cuando se quiere agregar fuerzas acumulativas? Trata de recordar     por qué es necesario hacer esta modificación.
+- Identifica dónde está el Attractor en la simulación. Cambia el color de este.
+- Observa que el Attractor tiene dos atributos this.dragging y this.rollover. Estos atributos no se modifican en el código, pero            permitirían mover el attractor con el mouse y cambiar su color cuando el mouse está sobre él. ¿Cómo podrías modificar el código para      que esto funcione? considera las funciones que ofrece p5.js para interactuar con el mouse.
+
 ## Explicación conceptual de la obra
 
 * ¿Qué concepto de la unidad 4 y cómo lo aplicaste en la obra?
@@ -33,6 +176,7 @@
 ```
 
 ## Captura de pantalla representativa
+
 
 
 
