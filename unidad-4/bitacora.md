@@ -367,6 +367,272 @@ function keyPressed(){
 
 ### Actividad 7
 
+parta este ejercicio modifique el codigo con levyflight, para que haya mayor probabilidad de que se creen circulos con amplitud pequeña y velocidad alto y menor probabilidad para que su amplitud sea alta. y le añadi una fuerza de resistencia, delimitada por unos circulos que al estar en contacto hace que reduzca la velocidad del objeto
+
+oscillator.js
+
+```js
+class Oscillator {
+  constructor() {
+    this.angle = createVector();
+
+    this.angleVelocity = createVector(
+      map(levyRandom(), 0, 1, -0.1, 0.1),
+      map(levyRandom(), 0, 1, -0.1, 0.1)
+    );
+
+    this.amplitude = createVector(
+      map(levyRandom(), 0, 1, 20, width / 2),
+      map(levyRandom(), 0, 1, 20, height / 2)
+    );
+  }
+
+  update(zones) {
+    // Posición actual del oscilador
+    let x = sin(this.angle.x) * this.amplitude.x + width/2;
+    let y = sin(this.angle.y) * this.amplitude.y + height/2;
+
+    // Revisar si está dentro de alguna zona de resistencia
+    for (let zone of zones) {
+      let d = dist(x, y, zone.x, zone.y);
+      if (d < zone.r) {
+        this.angleVelocity.mult(zone.drag); // aplicar resistencia
+      }
+    }
+
+    // Actualizar ángulo
+    this.angle.add(this.angleVelocity);
+  }
+
+  show() {
+    let x = sin(this.angle.x) * this.amplitude.x;
+    let y = sin(this.angle.y) * this.amplitude.y;
+
+    push();
+    translate(width / 2, height / 2);
+    stroke(0);
+    strokeWeight(2);
+    fill(127, 100);
+    line(0, 0, x, y);
+    circle(x, y, 32);
+    pop();
+  }
+}
+
+```
+sketch.js: 
+
+```js
+let oscillators = [];
+let stickyZones = []; //  Zonas donde hay resistencia
+
+function setup() {
+  createCanvas(640, 240);
+  for (let i = 0; i < 10; i++) {
+    oscillators.push(new Oscillator());
+  }
+
+  //  Definir zonas circulares: {x, y, r, drag}
+  stickyZones.push({x: width/3, y: height/2, r: 80, drag: 0.95});
+  stickyZones.push({x: 2*width/3, y: height/2, r: 60, drag: 0.99});
+}
+
+function draw() {
+  background(255);
+
+  //  Dibujar las zonas para verlas
+  noStroke();
+  fill(200, 100, 100, 80);
+  for (let zone of stickyZones) {
+    circle(zone.x, zone.y, zone.r*2);
+  }
+
+  for (let osc of oscillators) {
+    osc.update(stickyZones); // pasar las zonas al oscilador
+    osc.show();
+  }
+}
+
+// Función para valores Lévy
+function levyRandom(c = 1.0) {
+  while (true) {
+    let r1 = random(1);
+    let probability = pow(r1, -c);
+    let r2 = random(1);
+    if (r2 < probability) {
+      return r1;
+    }
+  }
+}
+
+```
+### Actividad 8
+
+sketch.js:
+
+```js
+let startAngle = 0;
+let angleVelocity = 0.2;
+
+function setup() {
+  createCanvas(640, 240);
+}
+
+function draw() {
+  background(255);
+
+  let angle = startAngle;
+  startAngle += 0.02;
+
+  for (let x = 0; x <= width; x += 24) {
+    let y = map(sin(angle), -1, 1, 0, height);
+    stroke(0);
+    strokeWeight(2);
+    fill(127, 127);
+    circle(x, y, 48);
+    angle += angleVelocity;
+  }
+}
+```
+para permitir el movimiento implemente el startAngle que registra el valor de angle inicial en cada fotograma de la animacion, esta  controla el progreso de la onda de un fotograma al siguiente. angleVelocity determina cuanto cambia el angulo entre cada circulo.
+
+en draw() el angle que se incrementa se establece en startAngle. startAngle += 0.02 hace que en cada frame la onda entera se desplace
+
+### Actividad 9
+
+archivos del codigo que modifique 
+
+spring.js
+
+```js
+class Spring {
+  constructor(a, b, length) {
+    this.a = a; // puede ser un p5.Vector (ancla) o un Bob
+    this.b = b; // siempre es un Bob
+    this.restLength = length;
+    this.k = 0.2;
+  }
+
+  connect() {
+    // Identificar posiciones
+    let posA = (this.a instanceof Bob) ? this.a.position : this.a; 
+    let posB = this.b.position;
+
+    // Vector desde A → B
+    let force = p5.Vector.sub(posB, posA);
+    let currentLength = force.mag();
+    let stretch = currentLength - this.restLength;
+
+    // Fuerza con Hooke
+    force.setMag(-1 * this.k * stretch);
+
+    // Aplicar fuerza sobre b
+    this.b.applyForce(force);
+
+    // Si A también es un Bob, aplicar reacción
+    if (this.a instanceof Bob) {
+      let opposite = force.copy().mult(-1);
+      this.a.applyForce(opposite);
+    }
+  }
+
+  constrainLength(minlen, maxlen) {
+    let posA = (this.a instanceof Bob) ? this.a.position : this.a;
+    let posB = this.b.position;
+    let direction = p5.Vector.sub(posB, posA);
+    let length = direction.mag();
+
+    if (length < minlen) {
+      direction.setMag(minlen);
+      this.b.position = p5.Vector.add(posA, direction);
+      this.b.velocity.mult(0);
+    } else if (length > maxlen) {
+      direction.setMag(maxlen);
+      this.b.position = p5.Vector.add(posA, direction);
+      this.b.velocity.mult(0);
+    }
+  }
+
+  showLine() {
+    let posA = (this.a instanceof Bob) ? this.a.position : this.a;
+    let posB = this.b.position;
+    stroke(0);
+    line(posA.x, posA.y, posB.x, posB.y);
+  }
+
+  showAnchor() {
+    if (!(this.a instanceof Bob)) {
+      fill(127);
+      circle(this.a.x, this.a.y, 10);
+    }
+  }
+}
+
+```
+
+sketch.js
+
+```js
+let bob1, bob2;
+let spring1, spring2;
+
+function setup() {
+  createCanvas(640, 360);
+
+  // Crear los bobs
+  bob1 = new Bob(width / 2, 150);
+  bob2 = new Bob(width / 2, 250);
+
+  // Primer resorte: ancla fija → bob1
+  spring1 = new Spring(createVector(width / 2, 10), bob1, 100);
+
+  // Segundo resorte: bob1 → bob2
+  spring2 = new Spring(bob1, bob2, 100);
+}
+
+function draw() {
+  background(255);
+
+  let gravity = createVector(0, 2);
+  bob1.applyForce(gravity);
+  bob2.applyForce(gravity);
+
+  // Conectar resortes
+  spring1.connect();
+  spring2.connect();
+
+  // Constrain para evitar que se estiren demasiado
+  spring1.constrainLength(30, 200);
+  spring2.constrainLength(30, 200);
+
+  // Actualizar movimiento
+  bob1.update();
+  bob2.update();
+  bob1.handleDrag(mouseX, mouseY);
+  bob2.handleDrag(mouseX, mouseY);
+
+  // Dibujar todo
+  spring1.showLine();
+  spring1.showAnchor();
+
+  spring2.showLine();
+
+  bob1.show();
+  bob2.show();
+}
+
+function mousePressed() {
+  bob1.handleClick(mouseX, mouseY);
+  bob2.handleClick(mouseX, mouseY);
+}
+
+function mouseReleased() {
+  bob1.stopDragging();
+  bob2.stopDragging();
+}
+```
+
+### Actividad 10
 
 ## Explicación conceptual de la obra
 
@@ -401,6 +667,7 @@ function keyPressed(){
 ```
 
 ## Captura de pantalla representativa
+
 
 
 
