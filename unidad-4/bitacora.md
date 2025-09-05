@@ -24,7 +24,7 @@
 
 ## Enlace a la obra en el editor de p5.js
 
-[Aquí está mi obra]([URL](https://editor.p5js.org/valeria804/sketches/7YWMo8-1J))
+[Aquí está mi obra](https://editor.p5js.org/valeria804/sketches/7YWMo8-1J)
 
 ## Código de la obra 
 
@@ -179,6 +179,7 @@ function levyFlightLength() {
 
 
 <img width="399" height="333" alt="Captura de pantalla 2025-09-05 075550" src="https://github.com/user-attachments/assets/69a1db1d-eadf-4454-9c4a-bad69ca891e7" />
+
 
 
 
