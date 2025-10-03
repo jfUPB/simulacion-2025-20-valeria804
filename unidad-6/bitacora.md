@@ -58,3 +58,10 @@ para llegar a esto modifique la resolucion del campo flowfield = new FlowField(4
 
 y cambie la forma en que se generan los vectores, haciendo que el angulo dependa de la posicion (i, j) de la celda = let angle = (i * 0.3 + j * 0.3) % TWO_PI; los angulos cambian de manera regular en la cuadricula debido a que % TWO_PI asegura que el angulo siempre este entre 0 y 2π.
 
+### Actividad 04
+
+
+
+### Autoevaliacion 
+
+3.0 ---- debido a que solo alcance a realizar hasta la actividad 03 adecuadamente
