@@ -60,8 +60,25 @@ y cambie la forma en que se generan los vectores, haciendo que el angulo dependa
 
 ### Actividad 04
 
+- Explica con tus palabras el objetivo y la lógica general de cálculo de cada una de las tres reglas de Flocking (Separación, Alineación, Cohesión).
 
+  separacion: evita que los agentes choquen o se amontonen. cada boid revisa quien esta demasiado cerca (dentro de una distancia corta). si hay vecinos muy cercanos, calcula un vector que lo empuje en direccion contraria a ellos. al sumar y promediar esos vectores, obtiene una fuerza de separacion que lo aleja suavemente de los demas
+
+  alineacion: permite que se mueva en la misma direccion que los vecinos. luego de que el boid observa las velocidades de los boids cercanos y calcula un promedio de esas direcciones, ajusta su propia velocidad para alinearse con ese promedio, limitando el cambio con su fuerza maxima de giro.
+
+  cohesion: hace que se mantengan en grupo y no hayan agente que se queden atras. calcula la posicion promedio del ecentro de masa del grupo local. luego genera un vector que apunta hacia ese centro y lo usa como fuerza de direccion para acercarse suavemente al grupo.
+
+- Lista los parámetros clave identificados (radio de percepción, pesos de las reglas, maxspeed, maxforce).
+
+  Radio de percepción:
+
+  - separacion: desiredSeparation = 25
+  - alineacion y cohesion: neighborDistance = 50
+
+  maxspeed = 3
+  maxforce = 0.05
 
 ### Autoevaliacion 
 
-3.0 ---- debido a que solo alcance a realizar hasta la actividad 03 adecuadamente
+3.5 ---- debido a que solo alcance a realizar hasta la actividad 03 adecuadamente, en la actividad 04 me falto la modificacion del codigo
+
