@@ -26,3 +26,7 @@
 
 a parte de que me genera el sentimiento de unicidad, y del hecho de vivir algo que solo se vera una vez en la vida; siento que hace que nos permitamos realmente vivir el momento, como la sensacion que da ir a un concierto pero diferente; es como si el artista nos dijera "esto es para ti", una introspeccion a nuestro deseo de controlar todo. debemos dejar ir y entender que las cosas no permanecen y aceptar la fugacidad del mundo y los momentos.
 
+## autoevaluacion 
+
+2.0 realicé 1 actividad completa y la autoevaluación.
+
